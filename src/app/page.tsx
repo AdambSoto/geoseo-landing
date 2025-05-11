@@ -38,6 +38,8 @@ export default function Home() {
   const [error, setError] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
@@ -61,7 +63,7 @@ export default function Home() {
             }
           >
             <div className="w-full h-full relative flex-1 max-w-5xl min-h-[500px] md:min-h-[650px] mx-auto">
-              {isMobile ? (
+              {!mounted ? null : isMobile ? (
                 <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl">
                   <Image
                     src="/shape-landing-hero.png"
