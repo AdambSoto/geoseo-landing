@@ -29,6 +29,8 @@ function useIsMobile() {
 
 export const BackgroundBeams = React.memo(
   ({ className }: { className?: string }) => {
+    const [mounted, setMounted] = React.useState(false);
+    React.useEffect(() => setMounted(true), []);
     const isMobile = useIsMobile();
     const paths = [
       // ... (paths array omitted for brevity, use the full array from the snippet)
@@ -36,6 +38,7 @@ export const BackgroundBeams = React.memo(
       // ... (rest of the paths)
       "M19 -645C19 -645 87 -240 551 -113C1015 14 1083 419 1083 419"
     ];
+    if (!mounted) return null;
     // On mobile, render nothing or a very simple background
     if (isMobile) {
       return (
