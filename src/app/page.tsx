@@ -46,6 +46,10 @@ export default function Home() {
       <main className="min-h-screen bg-black relative overflow-hidden flex flex-col items-center">
         <div className="w-full flex flex-col items-center pt-8 pb-4">
           <img src="/GEOSEO_LOGO_sm.png" alt="GEOSEO Logo" className="w-24 h-auto mx-auto mb-4" />
+          <div className="text-center mb-6 px-4">
+            <h1 className="text-2xl font-bold text-white mb-2">If Your Content Isn't Clear to AI,<br />It's Invisible to AI.</h1>
+            <p className="text-white/80 text-base max-w-md mx-auto">Search engines don't see style — they see structure. GEOSEO maps what your site means to modern AI and helps you optimize for maximum visibility.</p>
+          </div>
         </div>
         <div className="w-full max-w-2xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-lg border border-gray-700 mb-6">
           <iframe
