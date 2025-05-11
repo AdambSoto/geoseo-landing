@@ -64,8 +64,8 @@ export default function Home() {
           >
             <div className="w-full h-full relative flex-1 max-w-full sm:max-w-5xl min-h-[200px] sm:min-h-[500px] md:min-h-[650px] mx-auto flex items-center justify-center">
               {!mounted ? null : isMobile ? (
-                <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl p-2">
-                  {/* Image removed for testing */}
+                <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl p-8">
+                  <span className="text-white text-lg text-center">Welcome to GEOSEO (Mobile Safe Mode)</span>
                 </div>
               ) : (
                 <iframe
