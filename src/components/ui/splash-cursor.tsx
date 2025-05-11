@@ -871,6 +871,7 @@ function SplashCursor({
     }
 
     function resizeCanvas() {
+      if (!canvas) return false;
       let width = scaleByPixelRatio(canvas.clientWidth);
       let height = scaleByPixelRatio(canvas.clientHeight);
       if (canvas.width !== width || canvas.height !== height) {
@@ -1046,27 +1047,25 @@ function SplashCursor({
           1.0 / width,
           1.0 / height
         );
-      gl.uniform1i(displayMaterial.uniforms.uTexture, dye.read.attach(0));
+      gl.uniform1i((displayMaterial.uniforms as Record<string, any>).uTexture, dye.read.attach(0));
       blit(target);
     }
 
     function splatPointer(pointer: Pointer) {
       let dx = pointer.deltaX * config.SPLAT_FORCE;
       let dy = pointer.deltaY * config.SPLAT_FORCE;
-      splat(pointer.texcoordX, pointer.texcoordY, dx, dy, pointer.color);
+      splat(pointer.texcoordX, pointer.texcoordY, dx, dy, pointer.color as number[]);
     }
 
     function clickSplat(pointer: Pointer) {
       const color = generateColor();
-      color.r *= 10.0;
-      color.g *= 10.0;
-      color.b *= 10.0;
       let dx = 10 * (Math.random() - 0.5);
       let dy = 30 * (Math.random() - 0.5);
       splat(pointer.texcoordX, pointer.texcoordY, dx, dy, color);
     }
 
     function splat(x: number, y: number, dx: number, dy: number, color: number[]) {
+      if (!gl || !canvas) return;
       splatProgram.bind();
       gl.uniform1i(splatProgram.uniforms.uTarget, velocity.read.attach(0));
       gl.uniform1f(
@@ -1088,13 +1087,15 @@ function SplashCursor({
       dye.swap();
     }
 
-    function correctRadius(radius) {
+    function correctRadius(radius: number) {
+      if (!canvas) return radius;
       let aspectRatio = canvas.width / canvas.height;
       if (aspectRatio > 1) radius *= aspectRatio;
       return radius;
     }
 
-    function updatePointerDownData(pointer, id, posX, posY) {
+    function updatePointerDownData(pointer: Pointer, id: number, posX: number, posY: number) {
+      if (!canvas) return;
       pointer.id = id;
       pointer.down = true;
       pointer.moved = false;
@@ -1107,7 +1108,8 @@ function SplashCursor({
       pointer.color = generateColor();
     }
 
-    function updatePointerMoveData(pointer, posX, posY, color) {
+    function updatePointerMoveData(pointer: Pointer, posX: number, posY: number, color: number[]) {
+      if (!canvas) return;
       pointer.prevTexcoordX = pointer.texcoordX;
       pointer.prevTexcoordY = pointer.texcoordY;
       pointer.texcoordX = posX / canvas.width;
@@ -1119,31 +1121,34 @@ function SplashCursor({
       pointer.color = color;
     }
 
-    function updatePointerUpData(pointer) {
+    function updatePointerUpData(pointer: Pointer) {
       pointer.down = false;
     }
 
-    function correctDeltaX(delta) {
+    function correctDeltaX(delta: number) {
+      if (!canvas) return delta;
       let aspectRatio = canvas.width / canvas.height;
       if (aspectRatio < 1) delta *= aspectRatio;
       return delta;
     }
 
-    function correctDeltaY(delta) {
+    function correctDeltaY(delta: number) {
+      if (!canvas) return delta;
       let aspectRatio = canvas.width / canvas.height;
       if (aspectRatio > 1) delta /= aspectRatio;
       return delta;
     }
 
-    function generateColor() {
+    function generateColor(): number[] {
       let c = HSVtoRGB(Math.random(), 1.0, 1.0);
-      c.r *= 0.15;
-      c.g *= 0.15;
-      c.b *= 0.15;
-      return c;
+      return [
+        (typeof c.r === 'number' ? c.r : 0) * 0.15,
+        (typeof c.g === 'number' ? c.g : 0) * 0.15,
+        (typeof c.b === 'number' ? c.b : 0) * 0.15
+      ];
     }
 
-    function HSVtoRGB(h, s, v) {
+    function HSVtoRGB(h: number, s: number, v: number) {
       let r, g, b, i, f, p, q, t;
       i = Math.floor(h * 6);
       f = h * 6 - i;
@@ -1187,13 +1192,14 @@ function SplashCursor({
       return { r, g, b };
     }
 
-    function wrap(value, min, max) {
+    function wrap(value: number, min: number, max: number) {
       const range = max - min;
       if (range === 0) return min;
       return ((value - min) % range) + min;
     }
 
-    function getResolution(resolution) {
+    function getResolution(resolution: number) {
+      if (!gl) return { width: resolution, height: resolution };
       let aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
       if (aspectRatio < 1) aspectRatio = 1.0 / aspectRatio;
       const min = Math.round(resolution);
@@ -1203,12 +1209,12 @@ function SplashCursor({
       else return { width: min, height: max };
     }
 
-    function scaleByPixelRatio(input) {
+    function scaleByPixelRatio(input: number) {
       const pixelRatio = window.devicePixelRatio || 1;
       return Math.floor(input * pixelRatio);
     }
 
-    function hashCode(s) {
+    function hashCode(s: string) {
       if (s.length === 0) return 0;
       let hash = 0;
       for (let i = 0; i < s.length; i++) {
