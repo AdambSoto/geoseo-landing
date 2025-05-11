@@ -5,6 +5,8 @@ import { Circle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { Squares } from "@/components/ui/squares-background";
 
 
 function ElegantShape({
@@ -83,6 +85,33 @@ function HeroGeometric({
     title1?: string;
     title2?: string;
 }) {
+    const isMobile = useIsMobile();
+    if (isMobile) {
+        // Simpler mobile version with moving squares background
+        return (
+            <div className="relative min-h-[60vh] w-full flex flex-col items-center justify-center bg-[#030303] overflow-hidden">
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                    <Squares className="w-full h-full" squareSize={32} speed={0.5} borderColor="#333" />
+                </div>
+                <div className="relative z-10 flex flex-col items-center w-full">
+                    <Image
+                        src="/GEOSEO_LOGOXL.png"
+                        alt="GEOSEO Logo"
+                        width={128}
+                        height={48}
+                        className="w-32 h-12 my-8"
+                        priority
+                    />
+                    <h1 className="text-2xl font-bold text-white text-center mb-4">
+                        If Your Content Isn't Clear to AI, It's Invisible to AI.
+                    </h1>
+                    <p className="text-base text-white/60 text-center max-w-xs mx-auto">
+                        GEOSEO helps you optimize your site for modern AI and search engines.
+                    </p>
+                </div>
+            </div>
+        );
+    }
     return (
         <motion.div
             initial={{ opacity: 0, y: 60 }}
