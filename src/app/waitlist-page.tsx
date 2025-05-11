@@ -178,6 +178,8 @@ const WaitlistLandingPage: React.FC<WaitlistLandingPageProps> = ({
         >
           <Input
             type="email"
+            name="email"
+            id="waitlist-email"
             placeholder={emailPlaceholder}
             className="h-12 bg-background/80 border-border w-full sm:w-auto"
           />
