@@ -1,3 +1,4 @@
+"use client";
 import { HeroGeometric } from "@/components/ui/shape-landing-hero";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { Squares } from "@/components/ui/squares-background";
