@@ -41,6 +41,133 @@ export default function Home() {
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
 
+  if (isMobile) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative overflow-hidden flex flex-col items-center">
+        <div className="w-full flex flex-col items-center pt-8 pb-4">
+          <img src="/GEOSEO_LOGO_sm.png" alt="GEOSEO Logo" className="w-24 h-auto mx-auto mb-4" />
+        </div>
+        <div className="w-full max-w-2xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-lg border border-gray-700 mb-6">
+          <iframe
+            src="https://www.loom.com/embed/e9eeb3b1dae7429c9772e4c97ef586cb?sid=0b335602-e48e-4249-a353-3ae72ea6d1db"
+            frameBorder="0"
+            allowFullScreen
+            className="w-full h-full min-h-[200px]"
+            style={{ display: 'block' }}
+          />
+        </div>
+        <div className="w-full flex flex-col items-center mb-6">
+          <img src="/shape-landing-hero.png" alt="GEOSEO Hero" className="w-full max-w-xl rounded-2xl object-contain h-auto" />
+        </div>
+        {/* Waitlist Section with new text and formatting, but Squares background only */}
+        <section className="relative w-full flex flex-col items-center justify-center min-h-[400px] py-12 px-2">
+          <div className="relative z-10 flex items-center justify-center w-full min-h-[300px]">
+            <div className="w-full max-w-full mx-auto p-2 space-y-8 flex flex-col items-center justify-center">
+              <div className="space-y-4 text-center">
+                <h2 className="text-2xl font-extrabold text-center text-black">
+                  Join Our Product Launch Waitlist
+                </h2>
+                <p className="text-base text-gray-700 max-w-2xl mx-auto">
+                  Be part of something truly extraordinary. Join thousands of others already gaining early access to our revolutionary new product.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 max-w-full sm:max-w-lg mx-auto w-full">
+                <form
+                  className="flex flex-col sm:flex-row gap-2 w-full"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const email = emailRef.current?.value.trim();
+                    setError("");
+                    setSuccess(false);
+                    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+                      setError("Please enter a valid email address.");
+                      return;
+                    }
+                    setSubmitting(true);
+                    try {
+                      const res = await fetch("/api/waitlist", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email }),
+                      });
+                      if (res.ok) {
+                        setSuccess(true);
+                        setError("");
+                        if (emailRef.current) emailRef.current.value = "";
+                      } else {
+                        const data = await res.json();
+                        setError(data.error || "Submission failed. Try again.");
+                      }
+                    } catch (err) {
+                      setError("Network error. Please try again.");
+                    } finally {
+                      setSubmitting(false);
+                    }
+                  }}
+                >
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="h-12 sm:h-14 bg-gray-950/70 border-gray-700 text-base sm:text-lg text-white placeholder-gray-400 px-4 sm:px-6 w-full"
+                    ref={emailRef}
+                    disabled={submitting}
+                    required
+                  />
+                  <Button
+                    className="h-12 sm:h-14 px-6 sm:px-8 bg-white text-black text-base sm:text-lg font-bold hover:bg-gray-100 w-full sm:w-auto"
+                    variant="ghost"
+                    type="submit"
+                    disabled={submitting}
+                  >
+                    {submitting ? "Submitting..." : "Get Notified"}
+                  </Button>
+                </form>
+              </div>
+              {success && (
+                <div className="text-green-400 text-center font-semibold mt-2">Successfully Submitted</div>
+              )}
+              {error && (
+                <div className="text-red-400 text-center font-semibold mt-2">{error}</div>
+              )}
+              <div className="flex flex-col items-center gap-6 sm:gap-10">
+                <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                  <div className="flex -space-x-3 sm:-space-x-4">
+                    <Avatar className="border-2 w-10 h-10 sm:w-16 sm:h-16">
+                      <AvatarFallback className="text-base sm:text-lg font-semibold border-white/20 bg-purple-600">JD</AvatarFallback>
+                    </Avatar>
+                    <Avatar className="border-2 w-10 h-10 sm:w-16 sm:h-16">
+                      <AvatarFallback className="text-base sm:text-lg font-semibold border-white/20 bg-blue-600">AS</AvatarFallback>
+                    </Avatar>
+                    <Avatar className="border-2 w-10 h-10 sm:w-16 sm:h-16">
+                      <AvatarFallback className="text-base sm:text-lg font-semibold border-white/20 bg-blue-700">MK</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <span className="font-bold text-base sm:text-2xl text-white bg-black/40 rounded-lg px-3 py-1 sm:px-4 sm:py-2 mt-2 sm:mt-0">100+ people on the waitlist</span>
+                </div>
+                <div className="flex gap-6 sm:gap-10 justify-center">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-gray-300 hover:text-white"
+                  >
+                    <Twitter className="w-5 h-5 sm:w-7 sm:h-7" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-gray-300 hover:text-white"
+                  >
+                    <Github className="w-5 h-5 sm:w-7 sm:h-7" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
       {!isMobile && <HeroGeometric />}
