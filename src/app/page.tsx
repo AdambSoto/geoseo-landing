@@ -43,7 +43,7 @@ export default function Home() {
 
   if (isMobile) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative overflow-hidden flex flex-col items-center">
+      <main className="min-h-screen bg-black relative overflow-hidden flex flex-col items-center">
         <div className="w-full flex flex-col items-center pt-8 pb-4">
           <img src="/GEOSEO_LOGO_sm.png" alt="GEOSEO Logo" className="w-24 h-auto mx-auto mb-4" />
         </div>
@@ -64,10 +64,10 @@ export default function Home() {
           <div className="relative z-10 flex items-center justify-center w-full min-h-[300px]">
             <div className="w-full max-w-full mx-auto p-2 space-y-8 flex flex-col items-center justify-center">
               <div className="space-y-4 text-center">
-                <h2 className="text-2xl font-extrabold text-center text-black">
+                <h2 className="text-2xl font-extrabold text-center text-white">
                   Join Our Product Launch Waitlist
                 </h2>
-                <p className="text-base text-gray-700 max-w-2xl mx-auto">
+                <p className="text-base text-white max-w-2xl mx-auto">
                   Be part of something truly extraordinary. Join thousands of others already gaining early access to our revolutionary new product.
                 </p>
               </div>
@@ -164,6 +164,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <div className="fixed inset-0 pointer-events-none z-50">
+          <SplashCursor />
+        </div>
       </main>
     );
   }
