@@ -13,14 +13,35 @@ function cn(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+// Hook to detect if the device is mobile (width < 640px)
+function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 640);
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return isMobile;
+}
+
 export const BackgroundBeams = React.memo(
   ({ className }: { className?: string }) => {
+    const isMobile = useIsMobile();
     const paths = [
       // ... (paths array omitted for brevity, use the full array from the snippet)
       "M-380 -189C-380 -189 -312 216 152 343C616 470 684 875 684 875",
       // ... (rest of the paths)
       "M19 -645C19 -645 87 -240 551 -113C1015 14 1083 419 1083 419"
     ];
+    // On mobile, render nothing or a very simple background
+    if (isMobile) {
+      return (
+        <div className={cn("absolute h-full w-full inset-0 bg-background", className || "")}></div>
+      );
+    }
     return (
       <div
         className={cn(
