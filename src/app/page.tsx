@@ -45,7 +45,7 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
       <HeroGeometric />
       {/* Unified Scroll Animation + Waitlist Section with Shared Squares Background */}
-      <section className="relative w-full min-h-[800px] bg-black overflow-hidden flex flex-col items-center justify-center">
+      <section className="relative w-full min-h-[400px] sm:min-h-[800px] bg-black overflow-hidden flex flex-col items-center justify-center px-2 sm:px-0">
         <div className="absolute inset-0 z-0 pointer-events-none">
           <Squares className="w-full h-full" />
         </div>
@@ -53,25 +53,26 @@ export default function Home() {
           <ContainerScroll
             titleComponent={
               <>
-                <h2 className="text-3xl md:text-5xl font-bold mb-4 text-center text-white">
+                <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-bold mb-2 sm:mb-4 text-center text-white">
                   See Your GEO Dashboard in Action
                 </h2>
-                <p className="text-lg text-white text-center max-w-2xl mx-auto">
+                <p className="text-base xs:text-lg sm:text-lg md:text-xl text-white text-center max-w-2xl mx-auto">
                   Experience the power of AI-driven content optimization and analytics for your business.
                 </p>
               </>
             }
           >
-            <div className="w-full h-full relative flex-1 max-w-5xl min-h-[500px] md:min-h-[650px] mx-auto">
+            <div className="w-full h-full relative flex-1 max-w-full sm:max-w-5xl min-h-[200px] sm:min-h-[500px] md:min-h-[650px] mx-auto flex items-center justify-center">
               {!mounted ? null : isMobile ? (
-                <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl">
+                <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl p-2">
                   <Image
                     src="/shape-landing-hero.png"
                     alt="GEO Dashboard Preview"
                     width={600}
                     height={400}
-                    className="rounded-2xl object-contain max-h-full max-w-full"
+                    className="rounded-2xl object-contain max-h-[250px] sm:max-h-full w-full h-auto"
                     priority
+                    sizes="(max-width: 640px) 100vw, 600px"
                   />
                 </div>
               ) : (
@@ -88,23 +89,23 @@ export default function Home() {
         </div>
       </section>
       {/* Waitlist Section with new text and formatting, but Squares background only */}
-      <section className="relative w-full flex flex-col items-center justify-center min-h-[700px] py-32">
+      <section className="relative w-full flex flex-col items-center justify-center min-h-[400px] sm:min-h-[700px] py-12 sm:py-32 px-2 sm:px-0">
         <div className="absolute inset-0 z-0 pointer-events-none">
           <Squares className="w-full h-full" />
         </div>
-        <div className="relative z-10 flex items-center justify-center w-full min-h-[600px]">
-          <div className="w-full max-w-2xl mx-auto p-8 space-y-16 flex flex-col items-center justify-center">
-            <div className="space-y-8 text-center">
-              <h2 className="text-5xl sm:text-7xl font-extrabold text-center text-white">
+        <div className="relative z-10 flex items-center justify-center w-full min-h-[300px] sm:min-h-[600px]">
+          <div className="w-full max-w-full sm:max-w-2xl mx-auto p-2 sm:p-8 space-y-8 sm:space-y-16 flex flex-col items-center justify-center">
+            <div className="space-y-4 sm:space-y-8 text-center">
+              <h2 className="text-2xl xs:text-4xl sm:text-5xl md:text-7xl font-extrabold text-center text-white">
                 Join Our Product Launch Waitlist
               </h2>
-              <p className="text-2xl text-gray-200 max-w-2xl mx-auto">
+              <p className="text-base xs:text-lg sm:text-2xl text-gray-200 max-w-2xl mx-auto">
                 Be part of something truly extraordinary. Join thousands of others already gaining early access to our revolutionary new product.
               </p>
             </div>
-            <div className="flex gap-2 max-w-lg mx-auto w-full">
+            <div className="flex flex-col sm:flex-row gap-2 max-w-full sm:max-w-lg mx-auto w-full">
               <form
-                className="flex gap-2 w-full"
+                className="flex flex-col sm:flex-row gap-2 w-full"
                 onSubmit={async (e) => {
                   e.preventDefault();
                   const email = emailRef.current?.value.trim();
@@ -139,13 +140,13 @@ export default function Home() {
                 <Input
                   type="email"
                   placeholder="Enter your email"
-                  className="h-14 bg-gray-950/70 border-gray-700 text-lg text-white placeholder-gray-400 px-6"
+                  className="h-12 sm:h-14 bg-gray-950/70 border-gray-700 text-base sm:text-lg text-white placeholder-gray-400 px-4 sm:px-6 w-full"
                   ref={emailRef}
                   disabled={submitting}
                   required
                 />
                 <Button
-                  className="h-14 px-8 bg-white text-black text-lg font-bold hover:bg-gray-100"
+                  className="h-12 sm:h-14 px-6 sm:px-8 bg-white text-black text-base sm:text-lg font-bold hover:bg-gray-100 w-full sm:w-auto"
                   variant="ghost"
                   type="submit"
                   disabled={submitting}
@@ -160,35 +161,35 @@ export default function Home() {
             {error && (
               <div className="text-red-400 text-center font-semibold mt-2">{error}</div>
             )}
-            <div className="flex flex-col items-center gap-10">
-              <div className="flex items-center gap-6">
-                <div className="flex -space-x-4">
-                  <Avatar className="border-2 w-16 h-16">
-                    <AvatarFallback className="text-lg font-semibold border-white/20 bg-purple-600">JD</AvatarFallback>
+            <div className="flex flex-col items-center gap-6 sm:gap-10">
+              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                <div className="flex -space-x-3 sm:-space-x-4">
+                  <Avatar className="border-2 w-10 h-10 sm:w-16 sm:h-16">
+                    <AvatarFallback className="text-base sm:text-lg font-semibold border-white/20 bg-purple-600">JD</AvatarFallback>
                   </Avatar>
-                  <Avatar className="border-2 w-16 h-16">
-                    <AvatarFallback className="text-lg font-semibold border-white/20 bg-blue-600">AS</AvatarFallback>
+                  <Avatar className="border-2 w-10 h-10 sm:w-16 sm:h-16">
+                    <AvatarFallback className="text-base sm:text-lg font-semibold border-white/20 bg-blue-600">AS</AvatarFallback>
                   </Avatar>
-                  <Avatar className="border-2 w-16 h-16">
-                    <AvatarFallback className="text-lg font-semibold border-white/20 bg-blue-700">MK</AvatarFallback>
+                  <Avatar className="border-2 w-10 h-10 sm:w-16 sm:h-16">
+                    <AvatarFallback className="text-base sm:text-lg font-semibold border-white/20 bg-blue-700">MK</AvatarFallback>
                   </Avatar>
                 </div>
-                <span className="font-bold text-2xl text-white bg-black/40 rounded-lg px-4 py-2">100+ people on the waitlist</span>
+                <span className="font-bold text-base sm:text-2xl text-white bg-black/40 rounded-lg px-3 py-1 sm:px-4 sm:py-2 mt-2 sm:mt-0">100+ people on the waitlist</span>
               </div>
-              <div className="flex gap-10 justify-center">
+              <div className="flex gap-6 sm:gap-10 justify-center">
                 <Button
                   variant="ghost"
                   size="icon"
                   className="text-gray-300 hover:text-white"
                 >
-                  <Twitter className="w-7 h-7" />
+                  <Twitter className="w-5 h-5 sm:w-7 sm:h-7" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
                   className="text-gray-300 hover:text-white"
                 >
-                  <Github className="w-7 h-7" />
+                  <Github className="w-5 h-5 sm:w-7 sm:h-7" />
                 </Button>
               </div>
             </div>
