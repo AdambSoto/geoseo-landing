@@ -14,8 +14,30 @@ import { GridBackground } from "@/components/ui/grid-background";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Twitter, Github } from "lucide-react";
+import { useState, useRef } from "react";
+import React from "react";
+
+// Hook to detect if the device is mobile (width < 640px)
+function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 640);
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return isMobile;
+}
 
 export default function Home() {
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+  const emailRef = useRef<HTMLInputElement>(null);
+  const isMobile = useIsMobile();
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
       <HeroGeometric />
@@ -38,13 +60,26 @@ export default function Home() {
             }
           >
             <div className="w-full h-full relative flex-1 max-w-5xl min-h-[500px] md:min-h-[650px] mx-auto">
-              <iframe
-                src="https://www.loom.com/embed/e9eeb3b1dae7429c9772e4c97ef586cb?sid=0b335602-e48e-4249-a353-3ae72ea6d1db"
-                frameBorder="0"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full rounded-2xl"
-                style={{ display: 'block' }}
-              />
+              {isMobile ? (
+                <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl">
+                  <Image
+                    src="/shape-landing-hero.png"
+                    alt="GEO Dashboard Preview"
+                    width={600}
+                    height={400}
+                    className="rounded-2xl object-contain max-h-full max-w-full"
+                    priority
+                  />
+                </div>
+              ) : (
+                <iframe
+                  src="https://www.loom.com/embed/e9eeb3b1dae7429c9772e4c97ef586cb?sid=0b335602-e48e-4249-a353-3ae72ea6d1db"
+                  frameBorder="0"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full rounded-2xl"
+                  style={{ display: 'block' }}
+                />
+              )}
             </div>
           </ContainerScroll>
         </div>
@@ -65,18 +100,63 @@ export default function Home() {
               </p>
             </div>
             <div className="flex gap-2 max-w-lg mx-auto w-full">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="h-14 bg-gray-950/70 border-gray-700 text-lg text-white placeholder-gray-400 px-6"
-              />
-              <Button
-                className="h-14 px-8 bg-white text-black text-lg font-bold hover:bg-gray-100"
-                variant="ghost"
+              <form
+                className="flex gap-2 w-full"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const email = emailRef.current?.value.trim();
+                  setError("");
+                  setSuccess(false);
+                  if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+                    setError("Please enter a valid email address.");
+                    return;
+                  }
+                  setSubmitting(true);
+                  try {
+                    const res = await fetch("/api/waitlist", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    });
+                    if (res.ok) {
+                      setSuccess(true);
+                      setError("");
+                      if (emailRef.current) emailRef.current.value = "";
+                    } else {
+                      const data = await res.json();
+                      setError(data.error || "Submission failed. Try again.");
+                    }
+                  } catch (err) {
+                    setError("Network error. Please try again.");
+                  } finally {
+                    setSubmitting(false);
+                  }
+                }}
               >
-                Get Notified
-              </Button>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="h-14 bg-gray-950/70 border-gray-700 text-lg text-white placeholder-gray-400 px-6"
+                  ref={emailRef}
+                  disabled={submitting}
+                  required
+                />
+                <Button
+                  className="h-14 px-8 bg-white text-black text-lg font-bold hover:bg-gray-100"
+                  variant="ghost"
+                  type="submit"
+                  disabled={submitting}
+                >
+                  {submitting ? "Submitting..." : "Get Notified"}
+                </Button>
+              </form>
             </div>
+            {success && (
+              <div className="text-green-400 text-center font-semibold mt-2">Successfully Submitted</div>
+            )}
+            {error && (
+              <div className="text-red-400 text-center font-semibold mt-2">{error}</div>
+            )}
             <div className="flex flex-col items-center gap-10">
               <div className="flex items-center gap-6">
                 <div className="flex -space-x-4">
