@@ -65,15 +65,7 @@ export default function Home() {
             <div className="w-full h-full relative flex-1 max-w-full sm:max-w-5xl min-h-[200px] sm:min-h-[500px] md:min-h-[650px] mx-auto flex items-center justify-center">
               {!mounted ? null : isMobile ? (
                 <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl p-2">
-                  <Image
-                    src="/GEOSEO_LOGO_sm.png"
-                    alt="GEOSEO Logo"
-                    width={100}
-                    height={100}
-                    className="rounded-2xl object-contain max-h-[100px] w-full h-auto"
-                    priority
-                    sizes="(max-width: 640px) 100vw, 100px"
-                  />
+                  {/* Image removed for testing */}
                 </div>
               ) : (
                 <iframe
