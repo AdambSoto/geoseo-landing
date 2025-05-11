@@ -66,13 +66,13 @@ export default function Home() {
               {!mounted ? null : isMobile ? (
                 <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl p-2">
                   <Image
-                    src="/shape-landing-hero.png"
-                    alt="GEO Dashboard Preview"
-                    width={600}
-                    height={400}
-                    className="rounded-2xl object-contain max-h-[250px] sm:max-h-full w-full h-auto"
+                    src="/tiny-placeholder.png"
+                    alt="Tiny Placeholder"
+                    width={100}
+                    height={100}
+                    className="rounded-2xl object-contain max-h-[100px] w-full h-auto"
                     priority
-                    sizes="(max-width: 640px) 100vw, 600px"
+                    sizes="(max-width: 640px) 100vw, 100px"
                   />
                 </div>
               ) : (
