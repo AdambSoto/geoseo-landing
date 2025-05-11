@@ -66,8 +66,8 @@ export default function Home() {
               {!mounted ? null : isMobile ? (
                 <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl p-2">
                   <Image
-                    src="/tiny-placeholder.png"
-                    alt="Tiny Placeholder"
+                    src="/GEOSEO_LOGO_sm.png"
+                    alt="GEOSEO Logo"
                     width={100}
                     height={100}
                     className="rounded-2xl object-contain max-h-[100px] w-full h-auto"
