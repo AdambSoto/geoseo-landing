@@ -73,7 +73,7 @@ Translating your content into the language of search engines.`,
   } catch (error) {
     console.error('Error saving submission:', error)
     return NextResponse.json(
-      { error: 'Failed to save submission' },
+      { error: 'Failed to save submission', details: (error as any)?.message || String(error) },
       { status: 500 }
     )
   }
