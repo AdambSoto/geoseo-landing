@@ -100,7 +100,7 @@ function HeroGeometric({
             </div>
             <div className="relative z-10 container mx-auto px-4 md:px-6">
                 <div className="max-w-3xl mx-auto text-center">
-                    <Image src="/GEOSEO_LOGOXL.png" alt="GEOSEO Logo XL" width={220} height={80} className="mx-auto mb-8 mt-8" priority />
+                    <Image src="/GEOSEO_LOGOXL.png" alt="GEOSEO Logo XL" width={220} height={80} className="mx-auto mb-8 mt-8 w-32 h-12 xs:w-40 xs:h-14 sm:w-52 sm:h-20" priority />
                     {badge && (
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] mb-8 md:mb-12">
                             <Circle className="h-2 w-2 fill-rose-500/80" />
