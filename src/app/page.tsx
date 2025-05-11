@@ -66,8 +66,8 @@ export default function Home() {
               {!mounted ? null : isMobile ? (
                 <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl p-2">
                   <Image
-                    src="/shape-landing-hero.png"
-                    alt="GEO Dashboard Preview"
+                    src="https://placehold.co/600x400/png"
+                    alt="Placeholder Preview"
                     width={600}
                     height={400}
                     className="rounded-2xl object-contain max-h-[250px] sm:max-h-full w-full h-auto"
