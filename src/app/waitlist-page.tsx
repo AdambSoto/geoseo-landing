@@ -32,6 +32,10 @@ export const BackgroundBeams = React.memo(
     const [mounted, setMounted] = React.useState(false);
     React.useEffect(() => setMounted(true), []);
     const isMobile = useIsMobile();
+    // Precompute random values for gradients only once
+    const gradientRandoms = React.useMemo(() =>
+      Array.from({ length: 60 }, () => 93 + Math.random() * 8),
+    []);
     const paths = [
       // ... (paths array omitted for brevity, use the full array from the snippet)
       "M-380 -189C-380 -189 -312 216 152 343C616 470 684 875 684 875",
@@ -39,7 +43,7 @@ export const BackgroundBeams = React.memo(
       "M19 -645C19 -645 87 -240 551 -113C1015 14 1083 419 1083 419"
     ];
     if (!mounted) return null;
-    // On mobile, render nothing or a very simple background
+    // On mobile, render only a static background div (no SVG, no animation)
     if (isMobile) {
       return (
         <div className={cn("absolute h-full w-full inset-0 bg-background", className || "")}></div>
@@ -90,7 +94,7 @@ export const BackgroundBeams = React.memo(
                   x1: ["0%", "100%"],
                   x2: ["0%", "95%"],
                   y1: ["0%", "100%"],
-                  y2: ["0%", `${93 + Math.random() * 8}%`],
+                  y2: ["0%", `${gradientRandoms[index] || 100}%`],
                 }}
                 transition={{
                   duration: Math.random() * 10 + 10,
