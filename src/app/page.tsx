@@ -43,12 +43,13 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
-      <HeroGeometric />
-      {/* Unified Scroll Animation + Waitlist Section with Shared Squares Background */}
+      {!isMobile && <HeroGeometric />}
       <section className="relative w-full min-h-[400px] sm:min-h-[800px] bg-black overflow-hidden flex flex-col items-center justify-center px-2 sm:px-0">
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <Squares className="w-full h-full" />
-        </div>
+        {!isMobile && (
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <Squares className="w-full h-full" />
+          </div>
+        )}
         <div className="relative z-10 flex flex-col items-center w-full">
           <ContainerScroll
             titleComponent={
@@ -64,7 +65,7 @@ export default function Home() {
           >
             <div className="w-full h-full relative flex-1 max-w-full sm:max-w-5xl min-h-[200px] sm:min-h-[500px] md:min-h-[650px] mx-auto flex items-center justify-center">
               {!mounted ? null : isMobile ? (
-                <div className="flex items-center justify-center w-full h-full bg-gray-900 rounded-2xl p-8">
+                <div className="flex items-center justify-center w-full h-full bg-black rounded-2xl p-8">
                   <span className="text-white text-lg text-center">Welcome to GEOSEO (Mobile Safe Mode)</span>
                 </div>
               ) : (
