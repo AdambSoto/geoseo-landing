@@ -2,6 +2,7 @@
 import React from "react";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import Image from "next/image";
+import { Squares } from "@/components/ui/squares-background";
 
 export function HeroScrollDemo() {
   return (
@@ -18,14 +19,18 @@ export function HeroScrollDemo() {
           </>
         }
       >
-        <Image
-          src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80"
-          alt="hero"
-          height={720}
-          width={1400}
-          className="mx-auto rounded-2xl object-cover h-full object-left-top"
-          draggable={false}
-        />
+        <div className="relative h-full w-full">
+          <Squares className="absolute inset-0 w-full h-full z-0" />
+          <Image
+            src="/shape-landing-hero.png"
+            alt="GEOSEO Hero"
+            height={720}
+            width={1400}
+            className="mx-auto rounded-2xl object-contain h-full w-full relative z-10"
+            draggable={false}
+            priority
+          />
+        </div>
       </ContainerScroll>
     </div>
   );
