@@ -88,9 +88,6 @@ export default function Home() {
             <img src="/loom-mobile-placeholder.jpg" alt="Product Demo Preview" className="w-full h-full object-contain" style={{ minHeight: 120 }} />
           )}
         </div>
-        <div className="w-full flex flex-col items-center mb-6">
-          <img src="/shape-landing-hero-mobile.png" alt="GEOSEO Hero" className="w-full max-w-xs rounded-2xl object-contain h-auto" />
-        </div>
         <section className="relative w-full flex flex-col items-center justify-center min-h-[400px] py-12 px-2">
           <div className="relative z-10 flex items-center justify-center w-full min-h-[300px]">
             <div className="w-full max-w-full mx-auto p-2 space-y-8 flex flex-col items-center justify-center">
