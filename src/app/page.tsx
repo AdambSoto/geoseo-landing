@@ -32,6 +32,15 @@ function useIsMobile() {
   return isMobile;
 }
 
+function ErrorBoundary({ children, fallback }: { children: React.ReactNode, fallback: React.ReactNode }) {
+  const [hasError, setHasError] = useState(false);
+  return hasError ? fallback : (
+    <React.Suspense fallback={fallback}>
+      {React.cloneElement(children as React.ReactElement, { onError: () => setHasError(true) })}
+    </React.Suspense>
+  );
+}
+
 export default function Home() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -64,19 +73,24 @@ export default function Home() {
             <p className="text-white/80 text-base max-w-md mx-auto">Search engines don't see style — they see structure. GEOSEO maps what your site means to modern AI and helps you optimize for maximum visibility.</p>
           </div>
         </div>
-        <div className="w-full max-w-2xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-lg border border-gray-700 mb-6">
-          <iframe
-            src="https://www.loom.com/embed/e9eeb3b1dae7429c9772e4c97ef586cb?sid=0b335602-e48e-4249-a353-3ae72ea6d1db"
-            frameBorder="0"
-            allowFullScreen
-            className="w-full h-full min-h-[200px]"
-            style={{ display: 'block' }}
-          />
+        <div className="w-full max-w-2xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-lg border border-gray-700 mb-6 flex items-center justify-center bg-gray-900">
+          {mounted ? (
+            <ErrorBoundary fallback={<img src="/loom-mobile-placeholder.jpg" alt="Product Demo Preview" className="w-full h-full object-contain" style={{ minHeight: 120 }} />}>
+              <iframe
+                src="https://www.loom.com/embed/e9eeb3b1dae7429c9772e4c97ef586cb?sid=0b335602-e48e-4249-a353-3ae72ea6d1db"
+                frameBorder="0"
+                allowFullScreen
+                className="w-full h-full min-h-[120px]"
+                style={{ display: 'block' }}
+              />
+            </ErrorBoundary>
+          ) : (
+            <img src="/loom-mobile-placeholder.jpg" alt="Product Demo Preview" className="w-full h-full object-contain" style={{ minHeight: 120 }} />
+          )}
         </div>
         <div className="w-full flex flex-col items-center mb-6">
-          <img src="/shape-landing-hero.png" alt="GEOSEO Hero" className="w-full max-w-xl rounded-2xl object-contain h-auto" />
+          <img src="/shape-landing-hero-mobile.png" alt="GEOSEO Hero" className="w-full max-w-xs rounded-2xl object-contain h-auto" />
         </div>
-        {/* Waitlist Section with new text and formatting, but Squares background only */}
         <section className="relative w-full flex flex-col items-center justify-center min-h-[400px] py-12 px-2">
           <div className="relative z-10 flex items-center justify-center w-full min-h-[300px]">
             <div className="w-full max-w-full mx-auto p-2 space-y-8 flex flex-col items-center justify-center">
@@ -89,44 +103,14 @@ export default function Home() {
                 </p>
               </div>
               <WaitlistForm onSubmit={handleWaitlistSubmit} />
-              <div className="flex flex-col items-center gap-6 sm:gap-10">
-                <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                  <div className="flex -space-x-3 sm:-space-x-4">
-                    <Avatar className="border-2 w-10 h-10 sm:w-16 sm:h-16">
-                      <AvatarFallback className="text-base sm:text-lg font-semibold border-white/20 bg-purple-600">JD</AvatarFallback>
-                    </Avatar>
-                    <Avatar className="border-2 w-10 h-10 sm:w-16 sm:h-16">
-                      <AvatarFallback className="text-base sm:text-lg font-semibold border-white/20 bg-blue-600">AS</AvatarFallback>
-                    </Avatar>
-                    <Avatar className="border-2 w-10 h-10 sm:w-16 sm:h-16">
-                      <AvatarFallback className="text-base sm:text-lg font-semibold border-white/20 bg-blue-700">MK</AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <span className="font-bold text-base sm:text-2xl text-white bg-black/40 rounded-lg px-3 py-1 sm:px-4 sm:py-2 mt-2 sm:mt-0">100+ people on the waitlist</span>
-                </div>
-                <div className="flex gap-6 sm:gap-10 justify-center">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-gray-300 hover:text-white"
-                  >
-                    <Twitter className="w-5 h-5 sm:w-7 sm:h-7" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-gray-300 hover:text-white"
-                  >
-                    <Github className="w-5 h-5 sm:w-7 sm:h-7" />
-                  </Button>
-                </div>
-              </div>
             </div>
           </div>
         </section>
-        <div className="fixed inset-0 pointer-events-none z-50">
-          <SplashCursor />
-        </div>
+        <ErrorBoundary fallback={null}>
+          <div className="fixed inset-0 pointer-events-none z-50">
+            <SplashCursor />
+          </div>
+        </ErrorBoundary>
       </main>
     );
   }
@@ -171,7 +155,6 @@ export default function Home() {
           </ContainerScroll>
         </div>
       </section>
-      {/* Waitlist Section with new text and formatting, but Squares background only */}
       <section className="relative w-full flex flex-col items-center justify-center min-h-[400px] sm:min-h-[700px] py-12 sm:py-32 px-2 sm:px-0">
         <div className="absolute inset-0 z-0 pointer-events-none">
           <Squares className="w-full h-full" />
