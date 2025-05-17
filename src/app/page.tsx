@@ -64,6 +64,7 @@ export default function Home() {
   };
 
   if (isMobile) {
+    const [showLoom, setShowLoom] = useState(false);
     return (
       <main className="min-h-screen bg-black relative overflow-hidden flex flex-col items-center">
         <div className="w-full flex flex-col items-center pt-8 pb-4">
@@ -74,7 +75,19 @@ export default function Home() {
           </div>
         </div>
         <div className="w-full max-w-2xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-lg border border-gray-700 mb-6 flex items-center justify-center bg-gray-900">
-          {mounted ? (
+          {!showLoom ? (
+            <button
+              className="relative w-full h-full flex items-center justify-center focus:outline-none"
+              style={{ minHeight: 120 }}
+              onClick={() => setShowLoom(true)}
+              aria-label="Play product demo video"
+            >
+              <img src="/loom-mobile-placeholder.jpg" alt="Product Demo Preview" className="w-full h-full object-contain" />
+              <span className="absolute inset-0 flex items-center justify-center">
+                <svg className="w-16 h-16 text-white/90 bg-black/60 rounded-full p-3 shadow-lg" fill="none" viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="currentColor" opacity="0.3"/><polygon points="20,16 34,24 20,32" fill="white"/></svg>
+              </span>
+            </button>
+          ) : mounted ? (
             <ErrorBoundary fallback={<img src="/loom-mobile-placeholder.jpg" alt="Product Demo Preview" className="w-full h-full object-contain" style={{ minHeight: 120 }} />}>
               <iframe
                 src="https://www.loom.com/embed/e9eeb3b1dae7429c9772e4c97ef586cb?sid=0b335602-e48e-4249-a353-3ae72ea6d1db"
@@ -103,11 +116,13 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <ErrorBoundary fallback={null}>
-          <div className="fixed inset-0 pointer-events-none z-50">
-            <SplashCursor />
-          </div>
-        </ErrorBoundary>
+        {mounted && (
+          <ErrorBoundary fallback={null}>
+            <div className="fixed inset-0 pointer-events-none z-50">
+              <SplashCursor />
+            </div>
+          </ErrorBoundary>
+        )}
       </main>
     );
   }
