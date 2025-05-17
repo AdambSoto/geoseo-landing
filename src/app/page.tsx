@@ -15,7 +15,7 @@ import { GridBackground } from "@/components/ui/grid-background";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Twitter, Github } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import React from "react";
 
 // Hook to detect if the device is mobile (width < 640px)
@@ -39,7 +39,20 @@ export default function Home() {
   const emailRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
   const [mounted, setMounted] = React.useState(false);
+  const [showToast, setShowToast] = useState(false);
   React.useEffect(() => setMounted(true), []);
+
+  const handleWaitlistSubmit = async (email: string) => {
+    const res = await fetch("/api/waitlist", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "Submission failed");
+    }
+  };
 
   if (isMobile) {
     return (
@@ -75,64 +88,7 @@ export default function Home() {
                   Be part of something truly extraordinary. Join thousands of others already gaining early access to our revolutionary new product.
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 max-w-full sm:max-w-lg mx-auto w-full">
-                <form
-                  className="flex flex-col sm:flex-row gap-2 w-full"
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    const email = emailRef.current?.value.trim();
-                    setError("");
-                    setSuccess(false);
-                    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-                      setError("Please enter a valid email address.");
-                      return;
-                    }
-                    setSubmitting(true);
-                    try {
-                      const res = await fetch("/api/waitlist", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ email }),
-                      });
-                      if (res.ok) {
-                        setSuccess(true);
-                        setError("");
-                        if (emailRef.current) emailRef.current.value = "";
-                      } else {
-                        const data = await res.json();
-                        setError(data.error || "Submission failed. Try again.");
-                      }
-                    } catch (err) {
-                      setError("Network error. Please try again.");
-                    } finally {
-                      setSubmitting(false);
-                    }
-                  }}
-                >
-                  <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="h-12 sm:h-14 bg-gray-950/70 border-gray-700 text-base sm:text-lg text-white placeholder-gray-400 px-4 sm:px-6 w-full"
-                    ref={emailRef}
-                    disabled={submitting}
-                    required
-                  />
-                  <Button
-                    className="h-12 sm:h-14 px-6 sm:px-8 bg-white text-black text-base sm:text-lg font-bold hover:bg-gray-100 w-full sm:w-auto"
-                    variant="ghost"
-                    type="submit"
-                    disabled={submitting}
-                  >
-                    {submitting ? "Submitting..." : "Get Notified"}
-                  </Button>
-                </form>
-              </div>
-              {success && (
-                <div className="text-green-400 text-center font-semibold mt-2">Successfully Submitted</div>
-              )}
-              {error && (
-                <div className="text-red-400 text-center font-semibold mt-2">{error}</div>
-              )}
+              <WaitlistForm onSubmit={handleWaitlistSubmit} />
               <div className="flex flex-col items-center gap-6 sm:gap-10">
                 <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                   <div className="flex -space-x-3 sm:-space-x-4">
@@ -230,64 +186,7 @@ export default function Home() {
                 Be part of something truly extraordinary. Join thousands of others already gaining early access to our revolutionary new product.
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 max-w-full sm:max-w-lg mx-auto w-full">
-              <form
-                className="flex flex-col sm:flex-row gap-2 w-full"
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  const email = emailRef.current?.value.trim();
-                  setError("");
-                  setSuccess(false);
-                  if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-                    setError("Please enter a valid email address.");
-                    return;
-                  }
-                  setSubmitting(true);
-                  try {
-                    const res = await fetch("/api/waitlist", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ email }),
-                    });
-                    if (res.ok) {
-                      setSuccess(true);
-                      setError("");
-                      if (emailRef.current) emailRef.current.value = "";
-                    } else {
-                      const data = await res.json();
-                      setError(data.error || "Submission failed. Try again.");
-                    }
-                  } catch (err) {
-                    setError("Network error. Please try again.");
-                  } finally {
-                    setSubmitting(false);
-                  }
-                }}
-              >
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="h-12 sm:h-14 bg-gray-950/70 border-gray-700 text-base sm:text-lg text-white placeholder-gray-400 px-4 sm:px-6 w-full"
-                  ref={emailRef}
-                  disabled={submitting}
-                  required
-                />
-                <Button
-                  className="h-12 sm:h-14 px-6 sm:px-8 bg-white text-black text-base sm:text-lg font-bold hover:bg-gray-100 w-full sm:w-auto"
-                  variant="ghost"
-                  type="submit"
-                  disabled={submitting}
-                >
-                  {submitting ? "Submitting..." : "Get Notified"}
-                </Button>
-              </form>
-            </div>
-            {success && (
-              <div className="text-green-400 text-center font-semibold mt-2">Successfully Submitted</div>
-            )}
-            {error && (
-              <div className="text-red-400 text-center font-semibold mt-2">{error}</div>
-            )}
+            <WaitlistForm onSubmit={handleWaitlistSubmit} />
             <div className="flex flex-col items-center gap-6 sm:gap-10">
               <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                 <div className="flex -space-x-3 sm:-space-x-4">

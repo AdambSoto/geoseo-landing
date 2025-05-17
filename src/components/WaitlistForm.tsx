@@ -1,81 +1,154 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { GlowEffect } from '@/components/ui/glow-effect'
+import { Check, Mail } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { toast, Toaster } from 'sonner'
 
-export default function WaitlistForm() {
-  const [isSubmitted, setIsSubmitted] = useState(false)
+interface EmailToastProps {
+  message: string
+  description?: string
+  duration?: number
+  position?: 'bottom-center' | 'top-center' | 'top-right' | 'bottom-right'
+}
+
+const EmailToast = ({
+  message,
+  description,
+  duration = 3000,
+  position = 'bottom-center',
+}: EmailToastProps) => {
+  return (
+    <Toaster
+      position={position}
+      toastOptions={{
+        duration: duration,
+        classNames: {
+          toast: 'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg',
+          description: 'group-[.toast]:text-muted-foreground',
+          actionButton: 'group-[.toast]:bg-primary group-[.toast]:text-primary-foreground',
+          cancelButton: 'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground',
+        },
+      }}
+    />
+  )
+}
+
+interface WaitlistFormProps {
+  onSubmit?: (email: string) => Promise<void>
+}
+
+const WaitlistForm = ({ onSubmit }: WaitlistFormProps) => {
+  const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { register, handleSubmit, formState: { errors } } = useForm<{ email: string }>()
 
-  const onSubmit = async (data: { email: string }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) return
+
     setIsSubmitting(true)
     try {
-      const response = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      if (response.ok) {
-        setIsSubmitted(true)
+      if (onSubmit) {
+        await onSubmit(email)
+      } else {
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1000))
       }
-    } catch (error) {
-      console.error('Error submitting form:', error)
+      toast.success('Successfully joined waitlist!', {
+        description: `We'll notify ${email} when we launch.`,
+        icon: (
+          <div className="p-0.5 bg-emerald-500/10 dark:bg-emerald-500/25 rounded-full shadow-sm border border-emerald-500/20 dark:border-emerald-500/25 justify-center items-center gap-1.5 flex overflow-hidden">
+            <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-500" />
+          </div>
+        ),
+        action: {
+          label: 'Dismiss',
+          onClick: () => {},
+        },
+      })
+      setEmail('')
+    } catch (error: any) {
+      toast.error(error?.message || 'Something went wrong', {
+        description: 'Please try again later.',
+      })
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  if (isSubmitted) {
-    return (
-      <div className="flex items-center justify-center min-h-[350px]">
-        <div className="max-w-md w-full bg-[#19191b] rounded-xl shadow-xl p-8 text-center border border-zinc-800 relative">
-          <GlowEffect mode='breathe' blur='stronger' scale={1.08} colors={['#a21caf','#f43f5e','#f59e42']} className="z-0" />
-          <h2 className="text-2xl font-bold text-white mb-4">Thank You!</h2>
-          <p className="text-zinc-300">
-            We've received your submission and will be in touch soon.
+  return (
+    <div className="w-full max-w-md mx-auto">
+      <EmailToast message="Successfully joined waitlist!" />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <label htmlFor="email" className="block text-sm font-medium text-foreground">
+            Join our waitlist
+          </label>
+          <div className="relative">
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full px-4 py-2 pr-10 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+              required
+            />
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <Mail className="h-5 w-5 text-muted-foreground" />
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            We'll notify you when we launch. No spam, promise!
           </p>
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="flex items-center justify-center min-h-[350px]">
-      <div className={
-        `max-w-md w-full bg-[#19191b] rounded-xl shadow-xl p-8 border border-zinc-800 relative flex flex-col justify-end min-h-[300px]`}
-        style={{ boxShadow: isSubmitting ? '0 0 40px 8px #a21caf, 0 0 80px 16px #f43f5e, 0 0 120px 32px #f59e42' : undefined }}
-      >
-        {isSubmitting && (
-          <GlowEffect mode='breathe' blur='stronger' scale={1.08} colors={['#a21caf','#f43f5e','#f59e42']} className="z-0" />
-        )}
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full justify-between relative z-10">
-          <h2 className="text-2xl font-bold text-white mb-6 text-left">Join the waitlist</h2>
-          <input
-            type="email"
-            id="email"
-            {...register('email', { required: true, pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i })}
-            className="mt-1 block w-full rounded-md border border-zinc-700 bg-zinc-900 text-white placeholder-zinc-400 shadow-sm focus:border-fuchsia-500 focus:ring-fuchsia-500 px-4 py-3 text-lg"
-            placeholder="your@email.com"
-            disabled={isSubmitting}
-          />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-500">Valid email is required</p>
-          )}
-          <div className="flex justify-end mt-8">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-white text-black font-medium rounded-xl px-6 py-3 text-lg shadow transition-all focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full flex items-center justify-center py-2 px-4 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:pointer-events-none"
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={isSubmitting ? 'loading' : 'submit'}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.15 }}
+              className="flex items-center"
             >
-              {isSubmitting ? 'Submitting...' : 'Sign Me Up'}
-            </button>
-          </div>
-        </form>
-      </div>
+              {isSubmitting ? (
+                <>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary-foreground"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Submitting...
+                </>
+              ) : (
+                'Join Waitlist'
+              )}
+            </motion.span>
+          </AnimatePresence>
+        </button>
+      </form>
     </div>
   )
-} 
+}
+
+export default WaitlistForm 
